@@ -1,0 +1,62 @@
+#!/bin/bash
+
+
+# 1. Functions definition
+
+# Verify if the ftp utlity is installed in the system
+if ! which ncftpget > /dev/null 2>&1; then
+    echo You did not have the ncftpget utility installed in the system.
+    exit
+fi
+
+## Make a question, get a variable and responds in case of a blank answer
+# @$1 The question
+# @$2 The variable name
+# @$3 The response, case blank answer
+ask_check_blank() {
+    read -p "$1" $2
+    if [ -z ${!2} ]; then
+        echo $3
+        ask_check_blank "$1" $2 "$3"
+    fi
+}
+
+## Make a question, get a variable and responds in case of a blank answer.
+# Same as above, but its is for password usage. The input is hidden.
+# @$1 The question
+# @$2 The variable name
+# @$3 The response, case blank answer
+ask_check_blank_hinput() {
+    read -s -p "$1" $2
+    if [ -z ${!2} ]; then
+        echo $3
+        ask_check_blank "$1" $2 "$3"
+    fi
+    echo ""
+}
+
+
+# 2. The script
+
+
+if [ -z $ftp_address ]; then
+    ask_check_blank "Please, provides the ftp address: " ftp_address "You did not provides any value for the ftp address."
+fi
+
+if [ -z $ftp_user ]; then
+    ask_check_blank "Please, provides the ftp user: " ftp_user "You did not provides any value for the ftp user."
+fi
+
+if [ -z $ftp_password ]; then
+    ask_check_blank_hinput "Please, provides the ftp password: " ftp_password "You did not provides any value for the ftp password."
+fi
+
+# $ftp_address, $ftp_user and $ftp_password already setted. So can go and check files
+# todo: check if folder exists before proced
+if [ -z $ftp_path ]; then
+    ask_check_blank "Please, provides the ftp path to site: " ftp_path "You did not provides any value for the ftp site path."
+fi
+
+if [ -z $project_name ]; then
+    ask_check_blank "Please, provides a name for the project: " project_name "You did not provides any value for the project name."
+fi
